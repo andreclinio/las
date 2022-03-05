@@ -7,26 +7,26 @@ import 'package:las/public/las_data.dart';
 import 'package:las/public/las_info.dart';
 import 'package:las/private/las_transformer.dart';
 
+/// LAS reader
 class LASReader {
-  
+
+  /// Reads the content of a file [file] and returns a [LasData] object async.
+  /// This methods is a syntatic sugar for [readStream] using a stream based on file lines.
   Future<LasData> readFile(File file) async {
     if (!file.existsSync()) throw 'File ${file.absolute} not found';
     final stream = file.openRead().transform(utf8.decoder).transform(const LineSplitter());
     return readStream(stream);
   }
 
-  /// Faz a análise de um arquivo LAS e produz um objeto {@link LAS}.
-  /// @param reader reader que representa o arquivo LAS.
-  /// @param listener listener de progresso.
-  /// @param numBytes dica para o número de bytes total da entrada.
-  /// @return objeto {@link LAS} resultante da leitura.
+  /// Reads the content of a stream of strings ([lines]) where each one represents a line.
+  /// Returns an [LasData] object async.
   Future<LasData> readStream(Stream<String> lines) async {
     final las = LasData();
     final lasLines = LasTransformer().linesToLasLines(lines);
-    await for(LasLine lasLine in lasLines) {
+    await for (LasLine lasLine in lasLines) {
       switch (lasLine.section) {
         case LasSection.version:
-          parseVersionLine(lasLine, las);
+          _parseVersionLine(lasLine, las);
           break;
         case LasSection.well:
           parseWellLine(lasLine, las);
@@ -41,21 +41,18 @@ class LASReader {
           parseOtherLine(lasLine, las);
           break;
         case LasSection.data:
-          parseDataLine(lasLine, las);
+          _parseDataLine(lasLine, las);
           break;
       }
     }
     return las;
   }
 
-  /// Analisa as linhas da seção [LASSection.version].
-  /// @param lasLine linha atual.
-  /// @param las objeto resultante.
-  void parseVersionLine(LasLine lasLine, LasData las) {
+  /// Analysis for a version section line ([LASSection.version]).
+  void _parseVersionLine(LasLine lasLine, LasData las) {
     if (lasLine.isSectionLine()) {
       return;
     }
-
     final regex = RegExp(r'^[ \t]*(.+?)[ \t]*\.(.*?)[ \t]*:[ \t]*(.*)$');
     final line = lasLine.line;
     final match = regex.firstMatch(line);
@@ -72,65 +69,35 @@ class LASReader {
     }
   }
 
-  /// Analisa as linhas da seção {@link LASSection#WELL}.
-  ///
-  /// @param line linha atual.
-  /// @param las objeto resultante.
-  ///
-  /// @throws LASSyntaxErrorException quando há erro de sintaxe na linha.
+  /// Analysis for a well section line ([LASSection.well]).
   void parseWellLine(LasLine lasLine, LasData las) {
     final info = _parseInfo(lasLine);
     if (info == null) return;
     las.addWellInfo(info);
   }
 
-  /// Analisa as linhas da seção {@link LASSection#CURVE}.
-  ///
-  /// @param line linha atual.
-  /// @param las objeto resultante.
-  ///
-  /// @throws LASSyntaxErrorException quando há erro de sintaxe na linha.
+  /// Analysis for a well section line ([LASSection.curve]).
   void parseCurveLine(LasLine lasLine, LasData las) {
     final info = _parseInfo(lasLine);
     if (info == null) return;
     las.addCurveInfo(info);
   }
 
-  /// Analisa as linhas da seção {@link LASSection#PARAMETER}.
-  ///
-  /// @param line linha atual.
-  /// @param las objeto resultante.
-  ///
-  /// @throws LASSyntaxErrorException quando há erro de sintaxe na linha.
+  /// Analysis for a well section line ([LASSection.parameter]).
   void parseParameterLine(LasLine lasLine, LasData las) {
     final info = _parseInfo(lasLine);
     if (info == null) return;
     las.addParameterInfo(info);
   }
 
-  /// Analisa as linhas da seção {@link LASSection#OTHER}.
-  ///
-  /// @param line linha atual.
-  /// @param las objeto resultante.
+  /// Analysis for a well section line ([LASSection.other]).
   void parseOtherLine(LasLine lasLine, LasData las) {}
 
-  /// Analisa as linhas da seção {@link LASSection#DATA}.
-  ///
-  /// NOTA: Para simplificar o parser, armazenamos temporariamente os dados na na
-  /// estrutura {@link LASDataHolder} e depois atribuimos ao objeto {@link LAS}
-  /// resultante.
-  ///
-  /// @param line linha atual.
-  /// @param las objeto resultante.
-  /// @param dataHolder estrutura que auxilia o armazenamento dos dados as suas
-  ///        respectivas curvas.
-  ///
-  /// @throws LASSyntaxErrorException quando há erro de sintaxe na linha.
-  void parseDataLine(LasLine lasLine, LasData las) {
+  /// Analysis for a well section line ([LASSection.data]).
+  void _parseDataLine(LasLine lasLine, LasData las) {
     if (lasLine.isSectionLine()) {
       return;
     }
-
     final line = lasLine.line.trim();
     if (line.isEmpty) return;
     final values = line.split(RegExp(r' +'));
@@ -142,6 +109,7 @@ class LASReader {
     }
   }
 
+  /// Utility parse function: creates a [LasInfo] object based on a line.
   LasInfo? _parseInfo(LasLine lasLine) {
     if (lasLine.isSectionLine()) {
       return null;

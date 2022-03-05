@@ -1,20 +1,22 @@
+
+// LAS sections
 enum LasSection {
 
-  /// Informações sobre a versão. */
+  /// Version
   version,
 
-  /// Informações sobre os poços. */
+  /// Well
   well,
 
-  /// Informações sobre as curvas. */
+  /// Curve
   curve,
 
-  /// Parâmetros extras (seção opcional). */
+  /// Extra parameters
   parameter,
 
-  /// Seção livre (seção opcional). */
+  /// Optional free section
   other,
 
-  /// Dados sobre o poço. */
+  /// data (numeric values)
   data
 }

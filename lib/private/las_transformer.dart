@@ -2,6 +2,8 @@ import 'package:las/private/las_line.dart';
 import 'package:las/private/las_section.dart';
 
 class LasTransformer {
+
+  /// Stream transformer (identify line sections)
   Stream<LasLine> linesToLasLines(Stream<String> lines) async* {
     LasSection? section;
     var lineNumber = 1;
@@ -15,8 +17,8 @@ class LasTransformer {
     }
   }
 
-  /// Identifica a seção a qual a linha pertence e armazena a declaração na tabela de símbolos.
-  /// @param line linha atual.
+  /// Line ([line])section identification
+  /// @returns section
   LasSection? _recognizeSection(String line) {
     if (line.startsWith('~V')) return LasSection.version;
     if (line.startsWith('~W')) return LasSection.well;
@@ -27,6 +29,7 @@ class LasTransformer {
     return null;
   }
 
+  /// Coment [line] detection.
   bool _isCommentLine(String line) {
     return line.startsWith('#');
   }
