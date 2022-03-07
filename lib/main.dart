@@ -9,7 +9,7 @@ void main() {
   final reader = LASReader();
   final lasData$ = reader.readStream(stream);
   lasData$.then((lasData) {
-    final nc = lasData.numberOfParameters;
+    final nc = lasData.parameters.length;
     print('R: $nc');
   });
 }

@@ -1,46 +1,32 @@
+import 'package:las/private/las_internal_data.dart';
+import 'package:las/public/las_curve.dart';
 import 'package:las/public/las_info.dart';
 
-import 'las_curve.dart';
-
-/// Resulting class after a input stream is read.
 class LasData {
-  
-  /// Tipical value read: version
-  String? version;
+  final LasInternalData _lasInternalData;
 
-  /// Tipical value read: version description
-  String? versionDescription;
+  LasData(this._lasInternalData);
 
-  /// Wrap value
-  bool? wrap;
-
-  final List<LasCurve> _lasCurves = [];
-
-  final List<LasInfo> _wellInfo = [];
-  final List<LasInfo> _curveInfo = [];
-  final List<LasInfo> _parameterInfo = [];
-
-  void setVersion(String version) => this.version = version;
-  void setVersionDescription(String versionDescription) => this.versionDescription = versionDescription;
-  void setWrap(bool wrap) => this.wrap = wrap;
-
-  void addWellInfo(LasInfo info) => _wellInfo.add(info);
-  void addCurveInfo(LasInfo info) => _curveInfo.add(info);
-  void addParameterInfo(LasInfo info) => _parameterInfo.add(info);
-
-  int get numberOfCurves => _curveInfo.length;
-  int get numberOfWellInfo => _wellInfo.length;
-  int get numberOfParameters => _parameterInfo.length;
-
-  LasCurve getCurve(int index) {
-    if (index >= _lasCurves.length) {
-      final mn = _curveInfo[index].mnemonic;
-      final un = _curveInfo[index].unit;
-      final ap = _curveInfo[index].value;
-      final ds = _curveInfo[index].description;
-      final curve = LasCurve(mn, un, ap, ds);
-      _lasCurves.add(curve);
-    }
-    return _lasCurves[index];
+  LasCurve? getCurve(String curveName) {
+    return _lasInternalData.getCurve(curveName);
   }
+
+  LasInfo? getParameter(String parameterName) {
+    return _lasInternalData.getParameter(parameterName);
+  }
+
+  LasInfo? getWellInfo(String infoName) {
+    return _lasInternalData.getWellInfo(infoName);
+  }
+
+  String? get version => _lasInternalData.version;
+  bool? get wrap => _lasInternalData.wrap;
+  
+  double? get nullValue {
+    return _lasInternalData.nullValue;
+  }
+
+  Iterable<LasCurve> get curves => _lasInternalData.curves;
+  Iterable<LasInfo> get parameters => _lasInternalData.parameters;
+  Iterable<LasInfo> get wellInfos => _lasInternalData.wellInfos;
 }

@@ -12,13 +12,13 @@ class LasCurve {
   final String? description;
 
   /// Numeric values
-  final List<double?> values = [];
+  final List<double> values = [];
 
   /// Constructor
   LasCurve(this.mnemonic, this.unit, this.apiCode, this.description);
 
   /// Add value (when reading)
-  void addValue(double? value) {
+  void addValue(double value) {
     values.add(value);
   }
 }

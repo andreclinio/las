@@ -1,16 +1,8 @@
 
-import 'dart:io';
-
-import 'package:las/las.dart';
-import 'package:test/test.dart';
+import 'las_test_minnelusa.dart' as minnelusa;
+import 'las_test_other.dart' as other;
 
 void main() {
-  test('reads basic data for file [test/data/4771-36-SESE.las]', () async {
-    final reader = LASReader();
-    final file = File('test/data/4771-36-SESE.las');
-    final lasData = await reader.readFile(file);
-    expect(lasData.numberOfCurves, 5);
-    expect(lasData.numberOfWellInfo, 14);
-    expect(lasData.numberOfParameters, 7);
-  });
+  minnelusa.main();
+  other.main();
 }
