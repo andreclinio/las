@@ -9,7 +9,8 @@ import 'package:las/public/las_info.dart';
 import 'package:las/private/las_transformer.dart';
 
 /// LAS reader
-class LASReader {
+class LasReader {
+  
   /// Reads the content of a file [file] and returns a [LasInternalData] object async.
   /// This methods is a syntatic sugar for [readStream] using a stream based on file lines.
   Future<LasData> readFile(File file) async {
@@ -111,6 +112,7 @@ class LASReader {
     }
   }
 
+  /// Text do double conversion based on text value or NULL value attribute.
   double _toDouble(String text, LasInternalData lasInternalData) {
     final d = double.tryParse(text);
     if (d == null) return double.nan;

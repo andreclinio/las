@@ -12,7 +12,7 @@ void main() {
   }
 
   test('reads basic data for file [4771-36-SESE.las]', () async {
-    final reader = LASReader();
+    final reader = LasReader();
     final file = _getFile('4771-36-SESE.las');
     final lasData = await reader.readFile(file);
     expect(lasData.curves.length, 5);
@@ -21,7 +21,7 @@ void main() {
   });
 
   test('reads depth values for file [4771-36-SESE.las]', () async {
-    final reader = LASReader();
+    final reader = LasReader();
     final file = _getFile('4771-36-SESE.las');
     final lasData = await reader.readFile(file);
     final depth = lasData.getCurve('DEPT');
@@ -32,7 +32,7 @@ void main() {
   });
 
   test('reads some info for file [5070-14-SESW.las]', () async {
-    final reader = LASReader();
+    final reader = LasReader();
     final file = _getFile('5070-14-SESW.las');
     final lasData = await reader.readFile(file);
     final depth = lasData.getCurve('DEPT');

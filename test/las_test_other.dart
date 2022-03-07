@@ -11,7 +11,7 @@ void main() {
   }
 
   test('reads basic data for file [ashec1.las]', () async {
-    final reader = LASReader();
+    final reader = LasReader();
     final file = _getFile('ashec1.las');
     final lasData = await reader.readFile(file);
     expect(lasData.version, '2.0');
@@ -39,7 +39,7 @@ void main() {
   });
 
   test('reads basic data for file [by18d.las]', () async {
-    final reader = LASReader();
+    final reader = LasReader();
     final file = _getFile('by18d.las');
     final lasData = await reader.readFile(file);
     expect(lasData.version, '2.0');
