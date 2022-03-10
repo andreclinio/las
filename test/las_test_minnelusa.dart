@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 void main() {
 
   File _getFile(String fileName) {
-    final file = File('test/data/minnelusa/$fileName');
+    final file = File('test/assets/data/minnelusa/$fileName');
     return file;
   }
 
